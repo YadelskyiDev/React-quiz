@@ -6,6 +6,35 @@ import Input from '../../components/UI/Input/Input'
 
 class Auth extends Component {
 
+    state = {
+        formControls: {
+            email: {
+                value: '',
+                type: 'email',
+                label: 'Email',
+                errorMessage: 'Введіть коректний емейл',
+                valid: false,
+                touched: false,
+                validation: {
+                    required: true,
+                    email: true,
+                }
+            },
+            password: {
+                value: '',
+                type: 'password',
+                label: 'Пароль',
+                errorMessage: 'Введіть коректний пароль',
+                valid: false,
+                touched: false,
+                validation: {
+                    required: true,
+                    minLength: 6,
+                }
+            },
+        }
+    }
+
     loginHandler = () => {
 
     }
@@ -18,6 +47,29 @@ class Auth extends Component {
         e.preventDefault()
     }
 
+    onChangeHandler = (e, controlName) => {
+        console.log('${contorlName}: ', e.target.value)
+    }
+
+    renderInputs() {
+        return Object.keys(this.state.formControls).map((controlName, index)=>{
+            const control = this.state.formControls[controlName]
+            return (
+                <Input 
+                    key={controlName + index}
+                    type={control.type}
+                    value={control.value}
+                    valid={control.valid}
+                    touched={control.touched}
+                    label={control.label}
+                    shouldValidate={!!control.validation}
+                    errorMessage={control.errorMessage}
+                    onChange={e => this.onChangeHandler(e, controlName)}
+                />
+            )
+        })
+    }
+
     render() {
         return (
             <div className={classes.Auth}>
@@ -25,16 +77,8 @@ class Auth extends Component {
                     <h1>Auth</h1>
 
                     <form onSubmit={this.submitHandler} className={classes.AuthForm}>
-                        
-                        <Input 
-                            label="Email"
 
-                        />
-
-                        <Input 
-                            label="Password"
-                            errorMessage={'TEST'}
-                        />
+                        {this.renderInputs()}
 
                         <Button 
                         type="success" 
