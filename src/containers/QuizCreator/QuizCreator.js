@@ -4,6 +4,7 @@ import Button from '../../components/UI/Button/Button'
 import Input from '../../components/UI/Input/Input'
 import Select from '../../components/UI/Select/Select'
 import {createControl, validate, validateForm} from '../../form/formFramework'
+import axios from 'axios'
 
 
 function createOptionControl(number) {
@@ -32,6 +33,7 @@ class QuizCreator extends Component {
 
     state = {
         quiz: [],
+        isFormValid: false,
         rightAnswerId: 1,
         formControls: createFormControls(),
     }
@@ -42,10 +44,49 @@ class QuizCreator extends Component {
 
     addQuestionHandler = e => {
         e.preventDefault()
+
+        const quiz = this.state.quiz.concat() //back array clone
+        const index = quiz.length + 1
+
+        const {question,option1, option2, option3, option4} = this.state.formControls
+
+        const questionItem = {
+            question: question.value,
+            id: index,
+            rightAnswerId: this.state.rightAnswerId,
+            answers: [
+                { text: option1.value, id: option1.id },
+                { text: option2.value, id: option1.id },
+                { text: option3.value, id: option1.id },
+                { text: option4.value, id: option1.id },
+            ],
+        }
+
+        quiz.push(questionItem)
+
+        this.setState({
+            quiz,
+            isFormValid: false,
+            rightAnswerId: 1,
+            formControls: createFormControls(),
+        })
     }
 
-    createQuizHandler = () => {
+    createQuizHandler = async e => {
+        e.preventDefault()
 
+        try {
+            await axios.post('https://react-quiz-4da6d.firebaseio.com/quizes.json', this.state.quiz) 
+            
+            this.setState({
+                quiz: [],
+                isFormValid: false,
+                rightAnswerId: 1,
+                formControls: createFormControls(),
+            })
+        } catch (error) {
+            console.log(error)
+        }      
     }
 
     changeHandler = (value, controlName) =>{
@@ -114,7 +155,7 @@ class QuizCreator extends Component {
 
                         { this.renderInputs() }
 
-                        { select} 
+                        { select } 
 
                         <Button
                             type="primary"
