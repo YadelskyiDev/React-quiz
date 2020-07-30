@@ -1,21 +1,21 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import classes from './QuizCreator.module.css'
 import Button from '../../components/UI/Button/Button'
 import Input from '../../components/UI/Input/Input'
 import Select from '../../components/UI/Select/Select'
-import {createControl, validate, validateForm} from '../../form/formFramework'
-import axios from 'axios'
+import { createControl, validate, validateForm } from '../../form/formFramework'
+import axios from '../../axios/axios-quiz'
 
 
 function createOptionControl(number) {
     return createControl({
-            label: `Варіант ${number}`,
-            errorMessage: 'Значення не може бути пустим',
-            id: number,
+        label: `Варіант ${number}`,
+        errorMessage: 'Значення не може бути пустим',
+        id: number,
     }, { required: true })
 }
 
-function createFormControls(){
+function createFormControls() {
     return {
         question: createControl({
             label: 'Введіть питання',
@@ -48,7 +48,8 @@ class QuizCreator extends Component {
         const quiz = this.state.quiz.concat() //back array clone
         const index = quiz.length + 1
 
-        const {question,option1, option2, option3, option4} = this.state.formControls
+
+        const { question, option1, option2, option3, option4 } = this.state.formControls
 
         const questionItem = {
             question: question.value,
@@ -56,11 +57,12 @@ class QuizCreator extends Component {
             rightAnswerId: this.state.rightAnswerId,
             answers: [
                 { text: option1.value, id: option1.id },
-                { text: option2.value, id: option1.id },
-                { text: option3.value, id: option1.id },
-                { text: option4.value, id: option1.id },
+                { text: option2.value, id: option2.id },
+                { text: option3.value, id: option3.id },
+                { text: option4.value, id: option4.id },
             ],
         }
+
 
         quiz.push(questionItem)
 
@@ -76,20 +78,20 @@ class QuizCreator extends Component {
         e.preventDefault()
 
         try {
-            await axios.post('https://react-quiz-4da6d.firebaseio.com/quizes.json', this.state.quiz) 
-            
+            await axios.post('/quizes.json', this.state.quiz)
+
             this.setState({
                 quiz: [],
                 isFormValid: false,
                 rightAnswerId: 1,
-                formControls: createFormControls(),
+                formControls: createFormControls()
             })
         } catch (error) {
             console.log(error)
-        }      
+        }
     }
 
-    changeHandler = (value, controlName) =>{
+    changeHandler = (value, controlName) => {
         const formControls = { ...this.state.formControls }
         const control = { ...formControls[controlName] }
 
@@ -106,7 +108,7 @@ class QuizCreator extends Component {
     }
 
     renderInputs() {
-        return Object.keys(this.state.formControls).map((controlName, index)=>{
+        return Object.keys(this.state.formControls).map((controlName, index) => {
             const control = this.state.formControls[controlName]
 
             return (
@@ -120,7 +122,7 @@ class QuizCreator extends Component {
                         errorMessage={control.errorMessage}
                         onChange={e => this.changeHandler(e.target.value, controlName)}
                     />
-                    { index === 0 ? <hr/> : null }
+                    {index === 0 ? <hr /> : null}
                 </React.Fragment>
             )
         })
@@ -131,7 +133,7 @@ class QuizCreator extends Component {
             rightAnswerId: +e.target.value
         })
     }
-    
+
 
     render() {
         const select = <Select
@@ -139,10 +141,10 @@ class QuizCreator extends Component {
             value={this.state.rightAnswerId}
             onChange={this.selectChangeHandler}
             options={[
-                {text: 1, value: 1},
-                {text: 2, value: 2},
-                {text: 3, value: 3},
-                {text: 4, value: 4},
+                { text: 1, value: 1 },
+                { text: 2, value: 2 },
+                { text: 3, value: 3 },
+                { text: 4, value: 4 },
             ]}
         />
 
@@ -153,9 +155,9 @@ class QuizCreator extends Component {
 
                     <form onSubmit={this.submitHandler}>
 
-                        { this.renderInputs() }
+                        {this.renderInputs()}
 
-                        { select } 
+                        {select}
 
                         <Button
                             type="primary"

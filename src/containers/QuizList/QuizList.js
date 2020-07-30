@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import classes from './QuizList.module.css'
-import {NavLink} from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import Loader from '../../components/UI/Loader/Loader'
-import axios from 'axios'
+import axios from '../../axios/axios-quiz'
 
 
 class QuizList extends Component {
@@ -13,13 +13,13 @@ class QuizList extends Component {
     }
 
     renderQuizes() {
-        return this.state.quizes.map(quiz =>{
+        return this.state.quizes.map(quiz => {
             return (
                 <li
-                 key={quiz.id}
+                    key={quiz.id}
                 >
                     <NavLink to={'/quiz/' + quiz.id}>
-                        { quiz.name }
+                        {quiz.name}
                     </NavLink>
                 </li>
             )
@@ -28,23 +28,23 @@ class QuizList extends Component {
 
     async componentDidMount() {
         try {
-            const response = await axios.get('https://react-quiz-4da6d.firebaseio.com/quizes.json')
+            const response = await axios.get('/quizes.json')
 
-                const quizes = []
-                Object.keys(response.data).forEach((key, index)=>{
-                    quizes.push({
-                        id: key,
-                        name: `Тест №${index + 1}`
-                    })
+            const quizes = []
+            Object.keys(response.data).forEach((key, index) => {
+                quizes.push({
+                    id: key,
+                    name: `Тест №${index + 1}`
                 })
+            })
 
-                this.setState({
-                    quizes, loading: false
-                })
-        }catch (error) {
+            this.setState({
+                quizes, loading: false
+            })
+        } catch (error) {
             console.log(error)
         }
-     
+
     }
 
     render() {
@@ -53,12 +53,12 @@ class QuizList extends Component {
                 <div>
                     <h1>Список тестів</h1>
 
-                    { 
-                        this.state.loading 
-                        ? <Loader/>
-                        : <ul>
-                            {this.renderQuizes()}
-                        </ul>
+                    {
+                        this.state.loading
+                            ? <Loader />
+                            : <ul>
+                                {this.renderQuizes()}
+                            </ul>
                     }
                 </div>
             </div>
