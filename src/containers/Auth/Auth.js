@@ -43,6 +43,7 @@ class Auth extends Component {
             password: this.state.formControls.password.value,
             returnSecureToken: true
         }
+        
         try {
             const response = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyC1vzfjkxqnT5a8R8d1Wq0wYIQ-2CwbNwo', authData)
 
